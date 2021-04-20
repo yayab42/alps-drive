@@ -31,11 +31,10 @@ app.get("/api/drive/:name", function (req, res) {
       res.status(200).send(result);
     });
   } else {
-    console.log('je rentre dans un dossier gros')
-    drive.listDir(path.join(drive.ALPS_DRIVE_ROOT, fileName)).then((result) =>{
+    console.log("je rentre dans un dossier gros");
+    drive.listDir(path.join(drive.ALPS_DRIVE_ROOT, fileName)).then((result) => {
       res.status(200).send(result);
-    })
-    
+    });
   }
 });
 
@@ -47,14 +46,29 @@ app.delete("/api/drive/:name", function (req, res) {
   });
 });
 
-
-app.post("/api/drive", function(req, res){
-  const queryName = req.query.name
-  drive.createFolder(queryName).then((result)=>{
-    res.status(201).send(result)
+app.delete("/api/drive/:name/:scndName", function (req, res) {
+  console.log("ouiRequête");
+  const secondName = req.params.scndName;
+  const fileName = req.params.name;
+  drive.deleteFolder(path.join(fileName,secondName)).then((result) => {
+    res.status(201).send(result);
   });
 });
 
+app.post("/api/drive", function (req, res) {
+  const queryName = req.query.name;
+  drive.createFolder(queryName).then((result) => {
+    res.status(201).send(result);
+  });
+});
+
+app.post("/api/drive/:name", function (req, res) {
+  const queryName = req.query.name;
+  const fileName = req.params.name;
+  drive.createFolder(path.join(fileName, queryName)).then((result) => {
+    res.status(201).send(result);
+  });
+});
 
 module.exports = {
   start: start,
