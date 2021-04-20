@@ -70,6 +70,13 @@ app.post("/api/drive/:name", function (req, res) {
   });
 });
 
+app.put("/api/drive/", function (req, res){
+  const queryFile = req.files
+  drive.uploadFile(queryFile).then((result) => {
+    res.status(201).send(result);
+  })
+})
+
 module.exports = {
   start: start,
 };

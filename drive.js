@@ -74,6 +74,18 @@ function createFolder(queryName) {
     });
 }
 
+function uploadFile(queryFile) {
+  const pathToCopy = ALPS_DRIVE_ROOT;
+  return fs.promises
+  .copyFile(queryFile, pathToCopy)
+  .then(() =>{
+    console.log('fichier' + queryFile + ' envoyé');
+  })
+  .catch(() =>{
+    console.log('Echec de l envoi')
+  });
+}
+
 exports.createRootFolder = createRootFolder;
 exports.readFile = readFile;
 exports.isFile = isFile;
@@ -81,3 +93,4 @@ exports.listDir = listDir;
 exports.ALPS_DRIVE_ROOT = ALPS_DRIVE_ROOT;
 exports.deleteFolder = deleteFolder;
 exports.createFolder = createFolder;
+exports.uploadFile = uploadFile;
