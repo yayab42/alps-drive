@@ -19,7 +19,7 @@ function start() {
 
 app.get("/api/drive", function (req, res) {
   drive.listDir(drive.ALPS_DRIVE_ROOT).then((result) => {
-    res.send(result);
+    res.status(200).send(result);
   });
 });
 
@@ -28,12 +28,12 @@ app.get("/api/drive/:name", function (req, res) {
 
   if (drive.isFile(fileName)) {
     const file = drive.readFile(fileName).then((result) => {
-      res.send(result);
+      res.status(200).send(result);
     });
   } else {
     console.log('je rentre dans un dossier gros')
     drive.listDir(path.join(drive.ALPS_DRIVE_ROOT, fileName)).then((result) =>{
-      res.send(result);
+      res.status(200).send(result);
     })
     
   }
@@ -43,7 +43,7 @@ app.delete("/api/drive/:name", function (req, res) {
   console.log("ouiRequête");
   const fileName = req.params.name;
   drive.deleteFolder(fileName).then((result) => {
-    res.send(result);
+    res.status(201).send(result);
   });
 });
 
