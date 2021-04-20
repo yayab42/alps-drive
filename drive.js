@@ -38,9 +38,11 @@ function listDir(path) {
 function readFile(fileName) {
   /*let file = fs.readFileSync(ALPS_DRIVE_ROOT)
     return file;*/
-  return fs.promises.readFile(path.join(ALPS_DRIVE_ROOT, fileName)).then((result) => {
-    return result;
-  });
+  return fs.promises
+    .readFile(path.join(ALPS_DRIVE_ROOT, fileName))
+    .then((result) => {
+      return result;
+    });
 }
 
 function isFile(file) {
@@ -48,8 +50,34 @@ function isFile(file) {
   return stat.isFile();
 }
 
+function deleteFolder(fileName) {
+  const deletePath = path.join(ALPS_DRIVE_ROOT, fileName);
+  return fs.promises
+    .rmdir(deletePath, { recursive: true })
+    .then(() => {
+      console.log("Dossier supprimé : " + fileName);
+    })
+    .catch(() => {
+      console.log("Impossible de supprimer : " + fileName);
+    });
+}
+
+function createFolder(queryName) {
+  const pathToCreate = path.join(ALPS_DRIVE_ROOT, queryName);
+  return fs.promises
+    .mkdir(pathToCreate)
+    .then(() => {
+      console.log("dossier" + queryName + "créé");
+    })
+    .catch(() => {
+      console.log("Echec de la création");
+    });
+}
+
 exports.createRootFolder = createRootFolder;
 exports.readFile = readFile;
 exports.isFile = isFile;
 exports.listDir = listDir;
 exports.ALPS_DRIVE_ROOT = ALPS_DRIVE_ROOT;
+exports.deleteFolder = deleteFolder;
+exports.createFolder = createFolder;

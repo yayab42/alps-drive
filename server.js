@@ -1,46 +1,61 @@
-const fs = require('fs/promises');
-const drive = require('./drive');
-console.log("hello c'moi l'serveur")
-const path = require('path')
+const fs = require("fs/promises");
+const drive = require("./drive");
+console.log("hello c'moi l'serveur");
+const path = require("path");
 
-let express = require('express');
+let express = require("express");
 let app = express();
 
-app.use(express.static('frontend'))
+app.use(express.static("frontend"));
 
-let port = 3000
+let port = 3000;
 
 function start() {
-  console.log('Trkl jsuis lancé')
-    app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
-  })
+  console.log("Trkl jsuis lancé");
+  app.listen(port, () => {
+    console.log(`Example app listening at http://localhost:${port}`);
+  });
 }
 
-
-app.get('/api/drive', function(req,res){
-drive.listDir(drive.ALPS_DRIVE_ROOT).then((result) =>{
-  res.send(result)
-})
-})
-
-
-app.get('/api/drive/:name', function(req, res){
-
-  const fileName = req.params.name;
-  
-  if (drive.isFile(fileName)) {
-    const file = drive.readFile(fileName).then((result)=>{
-    
+app.get("/api/drive", function (req, res) {
+  drive.listDir(drive.ALPS_DRIVE_ROOT).then((result) => {
     res.send(result);
   });
+});
+
+app.get("/api/drive/:name", function (req, res) {
+  const fileName = req.params.name;
+
+  if (drive.isFile(fileName)) {
+    const file = drive.readFile(fileName).then((result) => {
+      res.send(result);
+    });
   } else {
-    const dir = drive.listDir(path.join(drive.ALPS_DRIVE_ROOT, fileName));
-    res.send(dir);
+    console.log('je rentre dans un dossier gros')
+    drive.listDir(path.join(drive.ALPS_DRIVE_ROOT, fileName)).then((result) =>{
+      res.send(result);
+    })
+    
   }
-})
+});
+
+app.delete("/api/drive/:name", function (req, res) {
+  console.log("ouiRequête");
+  const fileName = req.params.name;
+  drive.deleteFolder(fileName).then((result) => {
+    res.send(result);
+  });
+});
 
 
-  module.exports = {
-    start : start 
-}
+app.post("/api/drive", function(req, res){
+  const queryName = req.query.name
+  drive.createFolder(queryName).then((result)=>{
+    res.status(201).send(result)
+  });
+});
+
+
+module.exports = {
+  start: start,
+};
