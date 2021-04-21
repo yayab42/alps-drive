@@ -75,15 +75,16 @@ function createFolder(queryName) {
 }
 
 function uploadFile(queryFile) {
-  const pathToCopy = ALPS_DRIVE_ROOT;
+  const pathToCopy = ALPS_DRIVE_ROOT + queryFile.filename;
+  console.log(pathToCopy)
   return fs.promises
-  .copyFile(queryFile, pathToCopy)
-  .then(() =>{
-    console.log('fichier' + queryFile + ' envoyé');
-  })
-  .catch(() =>{
-    console.log('Echec de l envoi')
-  });
+    .copyFile(queryFile.file, pathToCopy)
+    .then(() => {
+      console.log("fichier" + queryFile + " envoyé");
+    })
+    .catch(() => {
+      console.log("Echec de l envoi de " + queryFile);
+    });
 }
 
 exports.createRootFolder = createRootFolder;

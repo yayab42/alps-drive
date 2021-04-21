@@ -2,11 +2,16 @@ const fs = require("fs/promises");
 const drive = require("./drive");
 console.log("hello c'moi l'serveur");
 const path = require("path");
+const busboy = require("express-busboy");
 
 let express = require("express");
 let app = express();
 
 app.use(express.static("frontend"));
+busboy.extend(app, {
+  upload: true,
+  path: '/tmp',
+});
 
 let port = 3000;
 
@@ -27,7 +32,7 @@ app.get("/api/drive/:name", function (req, res) {
   const fileName = req.params.name;
 
   if (drive.isFile(fileName)) {
-    const file = drive.readFile(fileName).then((result) => {
+      drive.readFile(fileName).then((result) => {
       res.status(200).send(result);
     });
   } else {
@@ -50,7 +55,7 @@ app.delete("/api/drive/:name/:scndName", function (req, res) {
   console.log("ouiRequête");
   const secondName = req.params.scndName;
   const fileName = req.params.name;
-  drive.deleteFolder(path.join(fileName,secondName)).then((result) => {
+  drive.deleteFolder(path.join(fileName, secondName)).then((result) => {
     res.status(201).send(result);
   });
 });
@@ -70,12 +75,13 @@ app.post("/api/drive/:name", function (req, res) {
   });
 });
 
-app.put("/api/drive/", function (req, res){
-  const queryFile = req.files
+app.put("/api/drive/", function (req, res) {
+  const queryFile = req.files.file;
+  console.log(req.files)
   drive.uploadFile(queryFile).then((result) => {
     res.status(201).send(result);
-  })
-})
+  });
+});
 
 module.exports = {
   start: start,
